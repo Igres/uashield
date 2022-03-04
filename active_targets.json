@@ -1,4 +1,4 @@
-,
+[
 {"site":{"page":"http://a0641414.xsph.ru/sites.json"},"proxy":{"ip":"103.110.162.210:80"},"NeedAttack":true},
 {"site":{"page":"http://a0641414.xsph.ru/sites.json"},"proxy":{"ip":"103.73.194.2:80"},"NeedAttack":true},
 {"site":{"page":"https://absolutbank.ru/"},"proxy":{"ip":"161.97.183.154:3128"},"NeedAttack":true},
