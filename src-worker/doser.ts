@@ -43,6 +43,7 @@ export class Doser {
   }
 
   private async initialize(numberOfWorkers: number, attemptNumber = 1): Promise<void> {
+  
     const config = await this.getSitesAndProxies()
     const targets: TargetDataAlternative[] = []
     if (!config) {
@@ -182,19 +183,20 @@ export class Doser {
         element?.eventSource.removeAllListeners()
         element?.stop()
       });
+      this.workers = [];
       if (this.ddosConfiguration != null) {
         let size = Math.floor(this.ddosConfiguration.targets.length / newCount)
         for (let i = 0; i < newCount; i++) {
           if (i < newCount - 1) {
-            const newWorker = this.createNewWorker(i*size,(i+1)*size)
+            const newWorker = this.createNewWorker(i * size, (i + 1) * size)
             this.workers.push(newWorker)
             if (this.working) {
               newWorker.start().catch(error => {
                 console.debug('Wasnt able to start new runner:', error)
               })
             }
-          }else{
-            const newWorker = this.createNewWorker(i*size,this.ddosConfiguration.targets.length)
+          } else {
+            const newWorker = this.createNewWorker(i * size, this.ddosConfiguration.targets.length)
             this.workers.push(newWorker)
             if (this.working) {
               newWorker.start().catch(error => {

