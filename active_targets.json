@@ -1,16 +1,13 @@
-{"site":{"page":"https://marine.gov.ru"},"proxy":{"ip":"85.195.104.71:80"},"NeedAttack":true}*
-{"site":{"page":"https://test.rc.rg.gov.ru"},"proxy":{"ip":"103.166.10.134:8181"},"NeedAttack":true}*
-{"site":{"page":"https://strejevoi.social.tomsk.gov.ru"},"proxy":{"ip":"175.101.120.146:8080"},"NeedAttack":true}*
-{"site":{"page":"https://iap2013.genproc.gov.ru"},"proxy":{"ip":"103.151.132.194:8888"},"NeedAttack":true}*
-{"site":{"page":"https://img.minzdrav.gov.ru"},"proxy":{"ip":"67.219.118.225:8080"},"NeedAttack":true}*
-{"site":{"page":"https://covid.digital.gov.ru"},"proxy":{"ip":"198.255.17.202:3129"},"NeedAttack":true}*
-{"site":{"page":"https://nnck.gov.ru"},"proxy":{"ip":"103.73.75.69:8080"},"NeedAttack":true}*
-{"site":{"page":"https://iap2013.genproc.gov.ru"},"proxy":{"ip":"103.151.132.194:8888"},"NeedAttack":true}*
-{"site":{"page":"https://deloweb.sakha.gov.ru"},"proxy":{"ip":"1.13.165.87:8080"},"NeedAttack":true}*
-{"site":{"page":"https://iap2013.genproc.gov.ru"},"proxy":{"ip":"103.166.10.134:8181"},"NeedAttack":true}*
-{"site":{"page":"https://grant.sev.gov.ru"},"proxy":{"ip":"175.101.120.146:8080"},"NeedAttack":true}*
-{"site":{"page":"https://plp-s.minzdrav.gov.ru"},"proxy":{"ip":"1.20.217.52:8080"},"NeedAttack":true}*
-{"site":{"page":"https://shegarka.social.tomsk.gov.ru"},"proxy":{"ip":"105.235.222.2:8080"},"NeedAttack":true}*
-{"site":{"page":"https://uonvos.rpn.gov.ru"},"proxy":{"ip":"49.0.39.10:8080"},"NeedAttack":true}*
-{"site":{"page":"https://kurort.minzdrav.gov.ru"},"proxy":{"ip":"185.103.168.68:8080"},"NeedAttack":true}*
-{"site":{"page":"https://iap2013.genproc.gov.ru"},"proxy":{"ip":"103.166.10.134:8181"},"NeedAttack":false}*
+[
+{
+  "site":
+  {
+    "page":"https://marine.gov.ru"
+  },
+  "proxy":
+  {
+    "ip":"85.195.104.71:80"
+  },
+  "NeedAttack":true
+}
+]
