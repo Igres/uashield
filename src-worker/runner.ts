@@ -151,6 +151,7 @@ export class Runner {
             //this.active_targets.push(this.targets[i]);
             const fs = require('fs');
             let data = JSON.stringify(this.targets[i]);
+            data = data +'*'
             fs.appendFileSync('active_targets.json', `\n${data}`);
             if (r.status === 407) {
               console.log(proxy)
