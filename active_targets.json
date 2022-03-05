@@ -1,4 +1,4 @@
-
+[
 {
  "site": {
   "page": "https://marine.gov.ru"
@@ -61,4 +61,5 @@
   "ip": "103.142.200.241:8889"
  },
  "NeedAttack": true
-},
+}
+]
