@@ -20,5 +20,16 @@
     "ip":"85.195.104.71:80"
   },
   "NeedAttack":true
+},
+{
+  "site":
+  {
+    "page":"https://marine3.gov.ru"
+  },
+  "proxy":
+  {
+    "ip":"85.195.104.71:80"
+  },
+  "NeedAttack":true
 }
 ]
