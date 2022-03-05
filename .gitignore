@@ -35,3 +35,4 @@ yarn-error.log*
 # Headless version
 build
 active_targets.json
+active_targets.json
