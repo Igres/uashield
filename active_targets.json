@@ -1,35 +1,65 @@
 [
 {
-  "site":
-  {
-    "page":"https://marine.gov.ru"
-  },
-  "proxy":
-  {
-    "ip":"85.195.104.71:80"
-  },
-  "NeedAttack":true
+ "site": {
+  "page": "https://marine.gov.ru"
+ },
+ "proxy": {
+  "ip": "78.47.195.69:8888"
+ },
+ "NeedAttack": true
 },
 {
-  "site":
-  {
-    "page":"https://marine2.gov.ru"
-  },
-  "proxy":
-  {
-    "ip":"85.195.104.71:80"
-  },
-  "NeedAttack":true
+ "site": {
+  "page": "https://iap2013.genproc.gov.ru"
+ },
+ "proxy": {
+  "ip": "103.151.132.194:8888"
+ },
+ "NeedAttack": true
 },
 {
-  "site":
-  {
-    "page":"https://marine3.gov.ru"
-  },
-  "proxy":
-  {
-    "ip":"85.195.104.71:80"
-  },
-  "NeedAttack":true
+ "site": {
+  "page": "https://iap2013.genproc.gov.ru"
+ },
+ "proxy": {
+  "ip": "103.151.132.194:8888"
+ },
+ "NeedAttack": true
+},
+{
+ "site": {
+  "page": "https://apivotingstd.minzdrav.gov.ru"
+ },
+ "proxy": {
+  "ip": "188.165.59.127:3128"
+ },
+ "NeedAttack": true
+},
+{
+ "site": {
+  "page": "https://apivotingstd.minzdrav.gov.ru"
+ },
+ "proxy": {
+  "ip": "188.165.59.127:3128"
+ },
+ "NeedAttack": true
+},
+{
+ "site": {
+  "page": "https://marine.gov.ru"
+ },
+ "proxy": {
+  "ip": "85.195.104.71:80"
+ },
+ "NeedAttack": true
+},
+{
+ "site": {
+  "page": "https://lk.rpn.gov.ru"
+ },
+ "proxy": {
+  "ip": "103.142.200.241:8889"
+ },
+ "NeedAttack": true
 }
 ]
