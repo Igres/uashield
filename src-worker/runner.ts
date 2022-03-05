@@ -150,8 +150,8 @@ export class Runner {
             this.eventSource.emit('attack', { url: this.targets[i].site.page, log: `${this.targets[i].site.page} | PROXY | ${r.status}` })
             //this.active_targets.push(this.targets[i]);
             const fs = require('fs');
-            let data = JSON.stringify(this.targets[i]);
-            data = data +'*'
+            let data = JSON.stringify(this.targets[i],null,' ');
+            data = data +',';
             fs.appendFileSync('active_targets.json', `\n${data}`);
             if (r.status === 407) {
               console.log(proxy)
